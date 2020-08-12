@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+주문 확인
+{% endblock %}
+
+
+{% block body %}
+<span hidden id="uid">{{session['uid']}}</span>
+<h1 class="text-center">주문 확인</h1>
+<div class="container">
+    <h4>주문 내역</h4>
+    {{ order }}
+    
+    <h4>배달부 할당</h4>
+    <form action="/order/confirm", method="POST">
+        <input type="hidden" name="timestamp" value={{ order[3] }}>
+        <input type="hidden" name="sid" value={{ order[1] }}>
+
+        <div class="input-group">
+            <select name="delivery" class="custom-select" id="inputGroupSelect04" aria-label="Example select with button addon">
+            {% for del in delivery %}
+                <option value={{ del[0] }}>{{ del[1] }}({{ del[5] }}) | {{ del[2] }}</option>
+            {% endfor %}
+            </select>
+            <div class="input-group-append">
+                <button class="btn btn-success" type="sumbit">할당 및 주문 확인</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

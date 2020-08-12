@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+메뉴 관리
+{% endblock %}
+
+
+{% block body %}
+<h1 class="text-center">{{sid}} 매장 메뉴 관리</h1>
+<div class="container">
+{% for menu in menus %}
+<form action="/mypage/seller/store/menu", method="POST">
+<input type="hidden" name="type" value="modify">
+<input type="hidden" name="sid" value={{ sid }}>
+<input type="hidden" name="value" value={{ menu }}>
+<div class="row">
+    <div class="form-group col-6">
+        <label for="name">메뉴 이름</label>
+        <input type="text" class="form-control" id="name" value={{ menu }} readonly>
+    </div>
+    <div class="form-group col-6">
+        <label for="name">수정 이름</label>
+        <input name="changeto" type="text" class="form-control" id="name" placeholder="수정할 이름" value={{ menu }}>
+    </div>
+</div>
+ 
+<div class="row">
+
+
+<button class="btn btn-success btn-lg btn-block mb-1 col-6" type="submit">수정</button>
+</form>
+<div class="col-6">
+        <form action="/mypage/seller/store/menu", method="POST">
+            <input type="hidden" name="sid" value={{ sid }}>
+            <input type="hidden" name="type" value="delete">
+            <input type="hidden" name="value" value={{ menu }}>
+            <button class="btn btn-danger btn-lg btn-block mb-1" type="submit">제거</button>
+        </form>
+</div>
+
+
+</div>
+{% endfor %}
+
+<form action="/mypage/seller/store/menu", method="POST">
+    <input type="hidden" name="sid" value={{ sid }}>
+    <input type="hidden" name="type" value="add">
+    <div class="form-group">
+        <label for="name">메뉴 추가</label>
+        <input name="value" type="text" class="form-control" id="name" placeholder="추가 메뉴">
+    </div>
+    <button class="btn btn-primary btn-lg btn-block mb-1" type="submit">추가</button>
+</form>
+</div>
+{% endblock %}

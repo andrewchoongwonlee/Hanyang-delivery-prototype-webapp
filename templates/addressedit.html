@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+주소록 관리
+{% endblock %}
+
+
+{% block body %}
+<h1 class="text-center">주소록 관리</h1>
+<div class="container">
+<h4>기존 결제수단 제거</h4>
+<form action="/mypage/customer/address", method="POST">
+    <input type="hidden" name="type" value="delete">
+    <input type="hidden" name="uid" value={{ session['uid'] }}>
+    <div class="input-group">
+        <select name="value" class="custom-select">
+        {% if address != None %}
+            {% for add in address %}
+            <option value='{{ add }}'>{{add}}</option>
+            {% endfor %}
+        {% endif %}
+        </select>
+        <div class="input-group-append">
+            <button class="btn btn-danger" type="sumbit">제거</button>
+        </div>
+    </div>
+</form>
+<br><br>
+<h4>새로운 결제수단 추가</h4>
+<form action="/mypage/customer/address", method="POST">
+    <input type="hidden" name="type" value="add">
+    <input type="hidden" name="uid" value={{ session['uid'] }}>
+    <div class="input-group">
+            <input name="new_address" type="text" class="form-control" placeholder="주소" required>
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">추가</button>
+            </div>
+        </div>
+</form>
+</div>
+{% endblock %}

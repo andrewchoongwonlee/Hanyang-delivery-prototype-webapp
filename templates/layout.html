@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src = "{{ url_for('static',filename='js/bootstrap.js') }}"></script>
+    <script src = "{{ url_for('static',filename='js/bootstrap-input-spinner.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/custom.css') }}" />
+    <title>배달의 한양 {% block title %}{% endblock %}</title>
+</head>
+<body>
+<div class="container-fluid px-0 h-100">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">배달의 한양</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      
+      {% if session['role'] == 'customers' %}
+      <li class="nav-item">
+        <a class="nav-link" href="/near">내 주변 매장</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          매장 검색
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/search/byname">이름 검색</a>
+          <a class="dropdown-item" href="/search/byaddress">주소 검색</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/search/bytags">태그 검색</a>
+        </div>
+      </li>
+
+        <form class="form-inline my-2 my-lg-0" action="/store">
+            <input class="form-control mr-sm-2" type="search" name="sid" placeholder="매장번호(sid)" aria-label="매장번호">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">바로가기</button>
+          </form>
+
+      {% elif session['role'] == 'sellers' %}
+      <li class="nav-item">
+          <a class="nav-link" href="/mypage/seller/store?uid={{ session['uid'] }}">내 매장</a>
+        </li>
+
+      {% elif session['role'] == 'delivery' %}
+      <li class="nav-item">
+          <a class="nav-link" href="/mypage/delivery/current">내 배달</a>
+        </li>
+       {% endif %} 
+    </ul>
+
+    {% if session['uid'] == None %}
+        <form action="/login" method="GET">
+            <button class="btn btn-outline-primary" type="submit">로그인</button>
+        </form>
+        {% else %} 
+        <ul class="navbar-nav mr-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ session['name'] }} 님
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% if session['role'] == 'customers' %}
+                <a class="dropdown-item" href="/mypage/customer/cart?uid={{ session['uid'] }}">장바구니</a>
+                <a class="dropdown-item" href="/mypage/customer/order?uid={{ session['uid'] }}">주문내역</a>
+              {% elif session['role'] == 'sellers' %}
+              <!-- <a class="dropdown-item" href="/mypage/seller/store?uid={{ session['uid'] }}">메장관리</a> -->
+              <a class="dropdown-item" href="/mypage/seller/order?uid={{ session['uid'] }}">주문관리</a>
+              {% elif session['role'] == 'delivery' %}
+              <a class="dropdown-item" href="/mypage/delivery/status?uid={{ session['uid'] }}">배달내역</a>
+              {% endif %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/mypage/info/auth?uid={{ session['uid'] }}&role={{ session['role'] }}">정보 수정</a>
+              {% if session['role'] == 'customers' %}
+              <a class="dropdown-item" href="/mypage/customer/address?uid={{ session['uid'] }}">주소록 관리</a>
+              <a class="dropdown-item" href="/mypage/customer/payments?uid={{ session['uid'] }}">결제수단 관리</a>
+              {% endif %}
+              </div>
+            </li>   
+          </ul>
+        <form action="/logout" method="POST">
+            <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">로그아웃</button>
+        </form>
+        {% endif %}
+  </div>
+</nav>
+    
+        {% block body %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>

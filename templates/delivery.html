@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+배달 목록
+{% endblock %}
+
+{% block body %}
+<h1 class="text-center">배달 목록</h1>
+<div class="container">
+<h4>배달 목록 ({{ stock }}건)</h4>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+        <th scope="col">시간</th>
+        <th scope="col">매장</th>
+        <th scope="col">주소</th>
+        <th scope="col">번호</th>
+        </tr>
+    </thead>
+    <tr>
+        {% for del in delivery %}
+        <td scope="col">{{ del[3] }}</td>
+        <td scope="col">{{ del[1] }}</td>
+        <td scope="col">{{ del[5] }}</td>
+        <td scope="col">{{ del[6] }}</td>
+        {% endfor %}
+    </tr>
+</table>
+
+</div>
+{% endblock %}

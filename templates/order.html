@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+
+{% block title %}
+주문하기
+{% endblock %}
+
+{% block body %}
+<h1 class="text-center">주문하기</h1>
+<div class="container w-100">
+<h4>주문 목록</h4>
+<script>
+    var curr_address;
+    var mylat;
+    var mylng;
+
+    function getlocation() {
+        navigator.geolocation.getCurrentPosition(function(position){
+            mylat = position.coords.latitude;
+            mylng = position.coords.longitude;
+        });
+        $(document).ready(function(){
+            var latlng = mylat +','+mylng;
+            var parameter = {
+                'latlng':latlng,
+                'language':'ko',
+                'key':'AIzaSyDdGsgXvx-1pbS8rDSqjQ5W599ezAkbt1I'
+            }
+            $.getJSON("https://maps.googleapis.com/maps/api/geocode/json", parameter, function(data){
+                curr_address = data['results'][0]['formatted_address'];
+                $('#curraddress').html("(현재 위치) " + curr_address);
+                $('#curraddress').attr("value", curr_address);
+            });
+        });
+    };
+
+    getlocation();
+</script>
+
+<form action="/orderaction", method="POST">
+    <input type="hidden" name="sid" value={{sid}}>
+<table class="table table-striped table-hover">
+        <thead>
+            <tr>
+            <th scope="col">메뉴</th>
+            <th scope="col">수량</th>
+            </tr>
+        </thead>
+        <tbody id="jsonresult">
+{% for menu in orderlist %}
+    <tr>
+        <td>{{ menu[0] }}</td>
+        <td>{{ menu[1] }}</td>
+    </tr>
+    <input type="hidden" name="{{ menu[0] }}" value="{{ menu[1] }}">
+{% endfor %}
+</tbody>
+</table>
+
+<h4>주문자 정보</h4>
+<div class="form-group">
+        <label for="name">이름</label>
+        <input id="name" type="text" class="form-control" name="name" placeholder="주문자 이름" value={{ session['name'] }} required>
+      </div>
+
+      <div class="form-group">
+            <label for="email">이메일</label>
+            <input id="email" type="email" class="form-control" name="uid" placeholder="이메일" value={{ session['uid'] }} required>
+          </div>
+        
+          <div class="form-group">
+                <label for="address">주소</label>
+                <select id="address" class="custom-select" name="address" aria-describedby="addhelp" required>
+                    <option id="curraddress" value=""></option>
+                    {% for add in address %}
+                    <option value='{{add}}'>{{add}}</option>
+                    {% endfor %}
+                    </select>
+                <small id="addhelp" class="form-text text-muted">주소 추가는 주소록 관리 메뉴에서 해주세요</small>
+          </div>
+        
+          <div class="form-group">
+            <label for="phone">연락처</label>
+            <input id="phone" type="text" class="form-control" name="phone" placeholder="전화번호" value={{ phone }} required>
+            </div>
+        
+            <div class="form-group">
+                <label  for="payment">결제수단</label>
+                <select id="payment" class="custom-select" name="payment" aria-describedby="payhelp" required>
+                    {% for payment in payments %}
+                    <option value="{{ payment[0] }}|{{ payment[1] }}">{{payment[0]}} | {{payment[1]}}</option>
+                    {% endfor %}
+                    </select>
+                <small id="payhelp" class="form-text text-muted">결제수단 추가는 결제수단 관리 메뉴에서 해주세요</small>
+            </div>
+
+    <button class="btn btn-primary btn-lg btn-block mb-3" type="submit">주문 하기</button>
+</div>
+</form>
+</div>
+{% endblock %}

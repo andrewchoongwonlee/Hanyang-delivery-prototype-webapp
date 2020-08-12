@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}
+결제수단 관리
+{% endblock %}
+
+
+{% block body %}
+<h1 class="text-center">결제수단 관리</h1>
+<div class="container">
+<h4>기존 결제수단 제거</h4>
+<form action="/mypage/customer/payments", method="POST">
+    <input type="hidden" name="type" value="delete">
+    <input type="hidden" name="uid" value={{ session['uid'] }}>
+    <div class="input-group">
+        <select name="value" class="custom-select" id="inputGroupSelect04" aria-label="Example select with button addon">
+        {% for payment in payments %}
+            {% if payment['type'] == 'card' %}
+            <option value={{ payment['type'] }}|{{payment['data']['card_num']}}>카드_{{payment['data']['card_num']}}</option>
+            {% elif payment['type'] == 'account' %}
+            <option value={{ payment['type'] }}|{{payment['data']['acc_num']}}>{{ banks[payment['data']['bid']] }}_{{payment['data']['acc_num']}}</option>
+            {% endif %}
+        {% endfor %}
+        </select>
+        <div class="input-group-append">
+            <button class="btn btn-danger" type="sumbit">제거</button>
+        </div>
+    </div>
+</form>
+<br><br>
+<h4>새로운 결제수단 추가</h4>
+<form action="/mypage/customer/payments", method="POST">
+    <input type="hidden" name="type" value="add">
+    <input type="hidden" name="uid" value={{ session['uid'] }}>
+    <div class="input-group">
+            <div class="input-group-prepend">
+                <select name="paymenttype" class="custom-select">
+                    <option value="card">카드</option>
+                    {% for bank in banks %}
+                    <option value={{bank}}>{{banks[bank]}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input name="num" type="number" class="form-control" placeholder="계좌/카드번호" required>
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">추가</button>
+            </div>
+        </div>
+</form>
+</div>
+{% endblock %}

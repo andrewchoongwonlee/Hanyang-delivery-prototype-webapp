@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block title %}
+매장 상세
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<div class="w-50 float-left">
+    <div hidden id="menu">{{ menu }}</div>
+    매장 번호: 
+    {{ sid }}
+    <br><br>
+    매장 이름: 
+    {{ data[sid]['sname'] }}
+    <br><br>
+    매장 주소: 
+    {{ data[sid]['address'] }}
+    <br><br>
+    전화번호: 
+    {% for phone in data[sid]['phone_nums'] %}
+    {{phone}} 
+    {% endfor %}
+    <br><br>
+    일정 (일월화수목금토) <br>
+    {% for day in data[sid]['schedule'] %}
+    {% if day['holiday'] == True %}
+    - 휴일
+    {% else %}
+    - {{ day['open']}} ~ {{ day['closed']}}
+    {% endif %}
+    <br>
+    {% endfor %}
+    <br>
+    매장 설명: 
+    {{ data[sid]['description'] }}
+    <br><br>
+    매장 태그: 
+    {{ data[sid]['tags'] }}
+</div>
+
+<div class="w-50 float-right">
+    <form action="/cartaction" method="POST">
+        <input type="hidden" name="action" value="add">
+        <input type="hidden" name="sid" value={{ sid }}>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+            <th scope="col">메뉴</th>
+            <th scope="col">수량</th>
+            </tr>
+        </thead>
+        <tbody id="jsonresult"></tbody>
+    </table>
+    {% if data[sid]['open'] == 'OPEN' %}
+    <button class="btn btn-success btn-lg btn-block" type="submit">장바구니에 추가</button>
+    {% else %}
+    <button class="btn btn-success btn-lg btn-block" type="submit" disabled>매장 closed 주문 불가</button>
+    {% endif %}
+</form>
+</div>
+
+<script>
+        var menu = JSON.parse($('#menu').text());
+        var menu_table = '';
+    
+        function menutable() {
+        menu.forEach(function(item){
+            menu_table += 
+            '<tr>' + 
+            '<td>' + item + '</td>' + 
+            '<td>' + '<input class="form-control my-2" id="num" type="number" min="0" max="100" step="1" name="' + item +'" value="0"/>' + '</td>' +
+            '</tr>';
+        });
+        $('#jsonresult').html(menu_table);
+        console.log(menu_table)
+        }
+    
+        menutable();
+    </script>
+
+    <script>
+        $("input[type='number']").inputSpinner();
+    </script>
+</div>
+{% endblock %}

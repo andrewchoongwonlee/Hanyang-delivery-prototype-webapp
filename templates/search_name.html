@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+
+{% block title %}
+이름 검색
+{% endblock %}
+
+{% block body %}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdGsgXvx-1pbS8rDSqjQ5W599ezAkbt1I" sync defer></script>
+
+<div class="map-container h-50 px-2 pt-2">
+<div id="map"></div>
+
+<script>
+    var map;
+    var markers = [];
+    var myLatLng
+
+    function addMarker(location, color) {
+        var marker = new google.maps.Marker({
+        icon: 'http://maps.google.com/mapfiles/ms/icons/'+color+'-dot.png',
+        position: location,
+        map: map
+        });
+        markers.push(marker);
+    }
+
+    function clearOverlays() {
+    for (var i = 0; i < markers.length; i++ ) {
+        markers[i].setMap(null);
+        }
+    markers.length = 0;
+    }
+
+    function initMap() {
+        var mylat;
+        var mylng;
+    
+        navigator.geolocation.getCurrentPosition(function(position){
+            mylat = position.coords.latitude;
+            mylng = position.coords.longitude;
+            myLatLng = {lat: mylat, lng: mylng}
+    
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: new google.maps.LatLng(myLatLng),
+                zoom: 15
+            });
+            console.log(myLatLng)
+            addMarker(myLatLng, 'red')
+        });
+    }
+    </script>
+    
+
+<script>
+    initMap()
+
+    $(document).ready(function(){
+        $("#args").keyup(function(){
+            var search_value  = $("#search_input").val()
+            parameter = {
+                "type": "name",
+                "value": search_value
+            }
+            $.getJSON("/search_ajax", parameter, function(data){
+                var search_table = '';
+                for(var sid in data){
+                    console.log(data[sid]['schedule'])
+                    search_table += 
+                    '<tr class="each_list" id="'+ sid.toString() +'">' + 
+                        //'<td>' + sid.toString() + '</td>' +
+                        '<td>' + data[sid]['sname'] + '</td>'+ 
+                        '<td class="address_width">' + data[sid]['address'] + '</td>' +
+                        '<td class="open_width">' + data[sid]['open'] + '</td>' +
+                        '<td>' + '<button id="'+ sid.toString() +'" class="each_btn btn btn-primary">상세페이지</button>' + '</td>' +
+                    '</tr>';
+                }
+                $('#jsonresult').html(search_table);
+                $(document).ready(function(){
+                    $('.each_btn').click(function(){
+                        var sid = $(this).attr("id")
+                        window.open("/store"+'?sid='+sid);
+                    });
+                });
+                $(document).ready(function(){
+                    $(".each_list").click(function() {
+                        parameter = {
+                            'type':'sid',
+                            'value':$(this).attr('id')
+                        }
+                        $.getJSON("/search_ajax", parameter, function(data){
+                            //console.log(data)
+                            clearOverlays()
+                            var storelocation = {lat: data['latlng'][0], lng: data['latlng'][1]}
+                            addMarker(storelocation, 'green')
+                            addMarker(myLatLng, 'red')
+                            map.panTo(storelocation, 'green');
+                            var bounds = new google.maps.LatLngBounds();
+                            for (var i = 0; i < markers.length; i++) {
+                            bounds.extend(markers[i].getPosition());
+                            }
+
+                            map.fitBounds(bounds);
+                            //map.setCenter(storelocation)
+                        });
+                    });
+                });
+            });
+            event.preventDefault();
+        });
+    });
+
+    
+
+</script>
+
+
+<form id="args">
+    <input id="search_input" class="form-control my-2" type="text" name="name" placeholder="상호 검색" aria-label="상호 검색" required>
+</form>
+
+<table class="table table-striped header-fixed table-hover">
+    <thead>
+        <tr>
+        <th scope="col">상호명</th>
+        <th class="address_width" scope="col">주소</th>
+        <th class="open_width" scope="col">영업중</th>
+        <th scope="col">상세</th>
+        </tr>
+    </thead>
+    <tbody id="jsonresult"></tbody>
+</table>
+{% endblock %}

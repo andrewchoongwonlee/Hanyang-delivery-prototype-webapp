@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}
+홈
+{% endblock %}
+
+{% block body %}
+<br><br>
+{% if session['name'] == None %}
+<h1 class="text-center py-5">서비스를 이용 하려면 로그인을 하십시오</h1>
+{% else %}
+<h1 class="text-center py-5">{{ session['name'] }}님 반갑습니다!</h1>
+{% endif %}
+{% endblock %}

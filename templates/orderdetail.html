@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}
+주문 상세
+{% endblock %}
+
+
+{% block body %}
+<span hidden id="uid">{{session['uid']}}</span>
+<h1 class="text-center">주문 상세</h1>
+{{data}}
+{% endblock %}

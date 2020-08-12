@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block title %}
+내 메장 관리
+{% endblock %}
+
+
+{% block body %}
+<h1 class="text-center">메장 관리</h1>
+<div class="container">
+{% for store in stores %}
+<form action="/mypage/seller/store", method="POST">
+<div class="row">
+    <div class="form-group col-6">
+        <label for="sid">매장 번호</label>
+        <input name="sid" type="number" class="form-control" id="sid" value={{ store['sid'] }} readonly>
+    </div>
+    <div class="form-group col-6">
+        <label for="sname">매장 이름</label>
+        <input type="text" class="form-control" id="sname" value={{ store['sname'] }} readonly>
+    </div>
+</div>
+    <div class="form-group">
+        <label for="address">매장 주소</label>
+        <input type="text" class="form-control" id="address" value='{{ store['address'] }}' readonly>
+    </div>
+    <div class="form-group">
+        <label for="description">상세 설명</label>
+        <textarea name="description" type="text" class="form-control" id="description"  aria-describedby="descriptionhelp" placeholder="매장 설명" rows="3">{{ store['description'] }}</textarea>
+        <small id="descriptionhelp" class="form-text text-muted">매장을 설명하는 설명글을 작성해 주세요</small>
+    </div>
+<div class="row">
+    <div class="form-group col-6">
+        <label for="tag1">태그1</label>
+        <select id="tag1" class="custom-select" name="tag1" aria-describedby="tag1help">
+            <option value="{{ store['tags'].split('|')[0] }}" selected>{{ store['tags'].split('|')[0] }} (현재 값)</option>
+            <option value="한식">한식</option>
+            <option value="분식">분식</option>
+            <option value="일식">일식</option>
+            <option value="치킨">치킨</option>
+            <option value="피자">피자</option>
+            <option value="중국집">중국집</option>
+            <option value="족발보쌈">족발,보쌈</option>
+            <option value="야식">야식</option>
+            <option value="찜탕">찜,탕</option>
+            <option value="도시락">도시락</option>
+            </select>
+        <small id="tag1help" class="form-text text-muted">매장을 설명하는 태그를 선택해 주세요</small>
+      </div>
+<div class="form-group col-6">
+    <label for="tag2">태그2</label>
+    <select id="tag2" class="custom-select" name="tag2" aria-describedby="tag2help">
+      <option value="{{ store['tags'].split('|')[1] }}" selected>{{ store['tags'].split('|')[1] }} (현재 값)</option>
+      <option value="일반음식점">일반음식점</option>
+      <option value="카페디저트">카페,디저트</option>
+      <option value="패스트푸드">패스트푸드</option>
+      <option value="프랜차이즈">프랜차이즈</option>
+    </select>
+    <small id="tag2help" class="form-text text-muted">매장을 설명하는 태그를 선택해 주세요</small>
+  </div>
+</div>
+<button class="btn btn-primary btn-lg btn-block mb-1" type="submit">저장</button>
+</form>
+<form action="/mypage/seller/store/menu", method="GET">
+    <input type="hidden" name="sid" value={{ store['sid'] }}>
+    <button class="btn btn-warning btn-lg btn-block mb-5" type="submit">메뉴 관리</button>
+</form>
+{% endfor %}
+</div>
+{% endblock %}

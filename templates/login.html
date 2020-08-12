@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+로그인
+{% endblock %}
+
+
+{% block body %}
+<h1 class="text-center">배달의 한양 로그인</h1>
+<form class="mx-5" action="/login" method="POST">
+    <input class="form-control my-2" type="email" name="uid" placeholder="user id" aria-label="user id" required>
+    <div class="input-group mb-3">
+            <input type="password" class="form-control" id="password" name="password" placeholder="password" aria-label="password" aria-describedby="button-addon2" required>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" id="showpw" type="button" id="button-addon2">보이기</button>
+            </div>
+        </div>
+    <button class="btn btn-primary btn-lg btn-block" type="submit">로그인</button>
+</form>
+
+
+<script>
+    $(document).ready(function(){
+        $("#showpw").click(function(){
+            var currtype = $("#password");
+            var btnval = $("#showpw");
+            
+            if (currtype.attr('type') == 'text') {
+                currtype.attr("type", "password");
+                btnval.html("보이기");
+            } else {
+                currtype.attr("type", "text");
+                btnval.html("숨기기");
+            }
+        });
+    });
+</script>
+{% endblock %}

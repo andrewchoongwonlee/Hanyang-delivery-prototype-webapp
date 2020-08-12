@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block title %}
+장바구니
+{% endblock %}
+
+
+{% block body %}
+<h1 class="text-center">장바구니</h1>
+<div id="cart"></div>
+
+
+<div class="mx-5" id="menuresult"></div>
+
+<form action="/cartaction" method="POST">
+    <input type="hidden" name="action" value="delete">
+    <button class="btn btn-danger btn-lg btn-block mb-3" id="menu_delete_btn type" type="submit">장바구니 비우기</button>
+</form>
+
+
+<script>
+        $(document).ready(function(){
+        var cart_table = '';
+        parameter = {
+            "type": "cart"
+        }
+        $.getJSON("/search_ajax", parameter, function(data){        
+            for(var sid in data) {
+                cart_table +=
+               ('<div><form id="cart_'+ sid +'" action="/order" method="POST">' +
+                '<input type="hidden" name="sid" value="' + sid + '">' +
+                '<h4>매장: <a href="/store?sid=' + sid + '">'+ sid +'</a><h4>' +
+                    '<table class="table table-striped table-hover">' +
+                        '<thead>' +
+                            '<tr>' +
+                            '<th class="w-50" scope="col">메뉴</th>' +
+                            '<th class="w-50" scope="col">수량</th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody id="jsonresult">');
+
+                console.log(data[sid])
+                for(var item in data[sid]){
+                    console.log(item)
+                    cart_table += 
+                    ('<tr>' + 
+                        '<td class="w-50">' + data[sid][item][0] + '</td>'+ 
+                        '<td class="w-50">' + 
+                        '<input class="form-control my-2" id="num" type="text" name="' + data[sid][item][0] +'" value="' + data[sid][item][1] + '" readonly>' +
+                        '</td>' +
+                    '</tr>');
+                }
+            
+                cart_table +=
+                ('</tbody>' +
+                '</table>' +
+                '<button class="btn btn-primary btn-lg btn-block mb-3" id="menu_order_btn" type="submit">주문하기</button>' +
+                '</form></div>');
+            }
+            $('#menuresult').html(cart_table);
+        });
+    });
+</script>
+{% endblock %}

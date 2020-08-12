@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}
+정보 수정 확인
+{% endblock %}
+
+
+{% block body %}
+<h1 class="text-center">정보 수정을 위해 비밀번호를 다시 입력 하세요</h1>
+<form class="mx-5" action="/mypage/info/edit" method="POST">
+    <input type="hidden" name="type" value="auth">
+    <input class="form-control my-2" type="email" name="uid" aria-label="user id" value= "{{ uid }}" readonly>
+    <div class="input-group mb-3">
+            <input type="password" class="form-control" id="password" name="password" placeholder="password" aria-label="password" aria-describedby="button-addon2" required>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" id="showpw" type="button" id="button-addon2">보이기</button>
+            </div>
+        </div>
+    <button class="btn btn-primary btn-lg btn-block" type="submit">정보 수정</button>
+</form>
+
+
+<script>
+    $(document).ready(function(){
+        $("#showpw").click(function(){
+            var currtype = $("#password");
+            var btnval = $("#showpw");
+            
+            if (currtype.attr('type') == 'text') {
+                currtype.attr("type", "password");
+                btnval.html("보이기");
+            } else {
+                currtype.attr("type", "text");
+                btnval.html("숨기기");
+            }
+        });
+    });
+</script>
+{% endblock %}

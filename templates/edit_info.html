@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}
+정보 수정
+{% endblock %}
+
+{% block body %}
+<h1 class="text-center">기본 정보 수정</h1>
+<form class="mx-5" action="/mypage/info/auth" method="POST">
+    이름
+    <input class="form-control my-2" type="text" name="name" aria-label="name" value= {{ data[0] }}>
+    이메일
+    <div>
+        <input class="form-control w-50 float-left my-2" type="text" name="local" aria-label="local" value= {{ data[2] }} readonly>
+        <div class="input-group mb-3 w-50 float-right my-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">@</span>
+                </div>
+                <input type="text" class="form-control" name="domain" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" value={{ data[3] }} readonly>
+              </div>
+    </div>
+    비밀번호
+    <div class="input-group mb-3">
+        <input type="password" class="form-control" id="password" name="password" placeholder="password" aria-label="password" aria-describedby="button-addon2" value={{data[4]}} required>
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" id="showpw" type="button" id="button-addon2">보이기</button>
+        </div>
+    </div>
+    전화번호
+    <input class="form-control my-2" type="text" name="phone" aria-label="phone" value= {{ data[1] }}>
+    <button class="btn btn-success btn-lg btn-block" type="submit">수정</button>
+</form>
+<br>
+
+<script>
+    $(document).ready(function(){
+        $("#showpw").click(function(){
+            var currtype = $("#password");
+            var btnval = $("#showpw");
+            
+            if (currtype.attr('type') == 'text') {
+                currtype.attr("type", "password");
+                btnval.html("보이기");
+            } else {
+                currtype.attr("type", "text");
+                btnval.html("숨기기");
+            }
+        });
+    });
+</script>
+{% endblock %}
